@@ -1,0 +1,107 @@
+#5/10/20
+# Web scrapper with Beautiful Soup and Google
+
+from bs4 import BeautifulSoup
+import requests
+
+# google search
+try: 
+    from googlesearch import search 
+except ImportError:  
+    print("No module named 'google' found")
+
+urls = []
+
+i = 0
+
+while i == 0:  
+    # to search 
+    query = input("Enter TV show title: ") # string to search on google (have users input title)   
+
+    #to stop program
+    if query == 'stop':
+        break
+
+    # adds results into urls array
+    for j in search(query, tld="co.in", num=10, stop=10, pause=2):  
+        urls.append(j)
+
+    #search for first wikipedia link and save url in variable
+    x = 'en.wikipedia.org'
+
+    wikiLink = [i for i in urls if x in i]
+    #print (wikiLink)
+
+    # special output if "parks and rec"
+
+    if wikiLink[0] == "https://en.wikipedia.org/wiki/Parks_and_Recreation":
+        print("April 9, 2009-February 24, 2015", end ='\n\n')
+        wikiLink.clear()
+        urls = []
+        
+        
+    else:     
+
+        # beautiful soup section 
+
+        source = requests.get(wikiLink[0]).text
+
+        soup = BeautifulSoup(source, 'lxml')
+                             
+        body = soup.find('body')
+
+        mwbody = body.find('div', class_='mw-body')
+
+        content = mwbody.find('div', id='bodyContent')
+
+        content2 = content.find('div', class_='mw-content-ltr')
+
+        content3 = content2.find('div', class_='mw-parser-output')
+
+        table = content3.find('table', class_='infobox vevent')
+
+        tbody = table.find('tbody')
+
+        # To get to "Original release" section of column
+
+        # try using find and find_all to look for "Original release" string
+        data = []
+        trTags = tbody.find_all('tr')
+        for trTags in trTags:
+            data.append(trTags.text)
+            #print(trTags.text)
+          
+        i = 0
+        x = 'Original release'
+
+        temp = [i for i in data if x in i]
+        temp2 = str(temp).split('e', 3)
+        temp2.pop(0)
+        temp2.pop(0)
+        temp2.pop(0)
+        temp3 = str(temp2).split('\\xa0')
+        temp4 = str(temp3).split('\\')
+        date = [temp4[0], temp4[4]]
+        start = str(date[0]).replace('[\'["', '')
+        end = date[1].replace('\', \'','')
+        total = start + end
+        print(total, end ='\n\n')
+
+        # resets arrays for next TV title
+        wikiLink = []
+        urls = []
+        data = []
+        date = []
+
+        # it all works except for parks and rec
+
+
+
+
+
+
+
+
+
+
+
