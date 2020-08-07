@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block heading %}
+        Hello!
+    {% endblock %}
+
+    {% block body %}
+        you searched: <br> {{name}} <br><br>
+        the release date: <br> {{release}}
+
+    <form action="{{url_for('hello')}}" method="POST">
+        <input type="text" name="name" placeholder="Enter the title" />
+        <button>Search another title</button>
+    </form>
+
+    <form action="{{url_for('clear')}}" method="POST">
+        <button>Delete SQLAlchemy</button>
+    </form>
+
+    <div class="content">
+        <table>
+            <tr>
+                <th>Your Search</th>
+                <th>The release dates</th>
+            </tr>
+            {% for tasks in moreTasks %}
+            {% for tasks2 in moreTasks2 %}
+            <tr>
+                <td>{{tasks.content}}</td>
+                <td>{{tasks2.content2}}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </table>
+    </div>.
+    {% endblock %}
+
+</html>
